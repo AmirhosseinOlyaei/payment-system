@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "netlify deploy --prod",
-    "set-env": "node scripts/set-env.js"
+    "set-env": "node scripts/set-env.js",
+    "postinstall": "next build"
   },
   "dependencies": {
     "@hookform/resolvers": "3.3.4",

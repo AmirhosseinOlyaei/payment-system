@@ -4,6 +4,9 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: { unoptimized: true },
+  trailingSlash: false,
+  reactStrictMode: true,
+  swcMinify: true,
 };
 
 module.exports = nextConfig;
