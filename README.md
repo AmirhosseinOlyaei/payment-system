@@ -1,5 +1,7 @@
 # Payment System with Stripe Integration
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/844dfe8c-b556-4fb7-9f89-715f2435e147/deploy-status)](https://app.netlify.com/sites/paywithstripe/deploys)
+
 A modern payment system built with Next.js, Supabase, and Stripe.
 
 ## Features
