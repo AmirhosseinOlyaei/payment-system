@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { CreditCard, LogIn, LogOut, User } from 'lucide-react';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { createSupabaseBrowserClient } from "@/lib/supabase-client";
+import { CreditCard, LogIn, LogOut, User } from "lucide-react";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -15,11 +15,11 @@ export function Navigation() {
 
   useEffect(() => {
     try {
-      const supabaseClient = createClientComponentClient();
+      const supabaseClient = createSupabaseBrowserClient();
       setSupabase(supabaseClient);
       setSupabaseInitialized(true);
     } catch (error) {
-      console.error('Supabase client initialization failed:', error);
+      console.error("Supabase client initialization failed:", error);
       setSupabaseInitialized(false);
     }
   }, []);
@@ -29,15 +29,19 @@ export function Navigation() {
 
     const getUser = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         setUser(user);
       } catch (error) {
-        console.error('Error fetching user:', error);
+        console.error("Error fetching user:", error);
       }
     };
     getUser();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event: string, session: any) => {
       setUser(session?.user);
     });
 
@@ -63,7 +67,7 @@ export function Navigation() {
             ) : user ? (
               <>
                 <Link href="/dashboard">
-                  <Button variant={pathname === '/dashboard' ? 'default' : 'ghost'}>
+                  <Button variant={pathname === "/dashboard" ? "default" : "ghost"}>
                     <User className="h-4 w-4 mr-2" />
                     Dashboard
                   </Button>
@@ -80,7 +84,7 @@ export function Navigation() {
               </>
             ) : (
               <Link href="/login">
-                <Button variant={pathname === '/login' ? 'default' : 'ghost'}>
+                <Button variant={pathname === "/login" ? "default" : "ghost"}>
                   <LogIn className="h-4 w-4 mr-2" />
                   Sign In
                 </Button>

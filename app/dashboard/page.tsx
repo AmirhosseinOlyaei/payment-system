@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { createSupabaseBrowserClient } from "@/lib/supabase-client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { CreditCard, Package } from "lucide-react";
@@ -17,27 +23,29 @@ interface Subscription {
 export default function Dashboard() {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
-  const supabase = createClientComponentClient();
+  const supabase = createSupabaseBrowserClient();
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchSubscription = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       if (user) {
         const { data, error } = await supabase
-          .from('subscriptions')
-          .select('*')
-          .eq('user_id', user.id)
+          .from("subscriptions")
+          .select("*")
+          .eq("user_id", user.id)
           .single();
 
         if (error) {
-          console.error('Error fetching subscription:', error);
+          console.error("Error fetching subscription:", error);
         } else {
           setSubscription(data);
         }
       }
-      
+
       setLoading(false);
     };
 
@@ -46,10 +54,10 @@ export default function Dashboard() {
 
   const handleSubscribe = async () => {
     try {
-      const response = await fetch('/api/create-checkout-session', {
-        method: 'POST',
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
       });
-      
+
       const { url } = await response.json();
       window.location.href = url;
     } catch (error) {
@@ -72,7 +80,7 @@ export default function Dashboard() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
-      
+
       <div className="grid gap-8 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -87,12 +95,15 @@ export default function Dashboard() {
                   <div>
                     <p className="font-medium">Status: {subscription.status}</p>
                     <p className="text-sm text-muted-foreground">
-                      Renews on: {new Date(subscription.current_period_end).toLocaleDateString()}
+                      Renews on:{" "}
+                      {new Date(subscription.current_period_end).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 <Button variant="outline" disabled={subscription.cancel_at_period_end}>
-                  {subscription.cancel_at_period_end ? "Cancellation scheduled" : "Cancel subscription"}
+                  {subscription.cancel_at_period_end
+                    ? "Cancellation scheduled"
+                    : "Cancel subscription"}
                 </Button>
               </div>
             ) : (
